@@ -6,15 +6,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css" />
     <link rel="stylesheet" href="/style.css" />
     <script type="module">
-      import { Hono } from 'https://esm.sh/hono@3.8.1'
       import Alpine from 'https://esm.sh/alpinejs'
       Alpine.store('app', {
         init() {
           this.dispatch()
         },
         async dispatch() {
-          const f = new Function('Hono', this.code.replace(/export\s+default/, 'return '))
-          const app = f(Hono)
+          const code = this.code
+          const blobURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }))
+          const { default: app } = await import(/*@vite-ignore */ blobURL)
           const res = await app.request(this.path, {
             method: this.method
           })
@@ -26,7 +26,9 @@
             .slice(0, -2)
           this.result = await res.text()
         },
-        code: `const app = new Hono()
+        code: `import { Hono } from 'https://esm.sh/hono'
+
+const app = new Hono()
 
 app.get('/hello', (c) => {
   const name = c.req.query('name')
