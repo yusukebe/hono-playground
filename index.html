@@ -3,7 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
+    />
     <link rel="stylesheet" href="/style.css" />
     <script type="module">
       import Alpine from 'https://esm.sh/alpinejs'
@@ -16,7 +19,7 @@
           const blobURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }))
           const { default: app } = await import(/*@vite-ignore */ blobURL)
           const res = await app.request(this.path, {
-            method: this.method
+            method: this.method,
           })
           this.info.status = res.status
           this.info.headers = [...res.headers.entries()]
@@ -41,8 +44,8 @@ export default app`,
         result: 'loading...',
         info: {
           status: undefined,
-          headers: ''
-        }
+          headers: '',
+        },
       })
       window.Alpine = Alpine
       window.Alpine.start()
