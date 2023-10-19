@@ -2,13 +2,10 @@
   <head>
     <script type="module">
       import { Hono } from 'https://esm.sh/hono@3.8.1'
-      const dispatch = async () => {
-        const app = new Hono()
-        app.get('/', (c) => c.text('This is Hono'))
-        const res = await app.request('/')
-        document.getElementById('result').innerText = await res.text()
-      }
-      dispatch()
+      const app = new Hono()
+      app.get('*', (c) => c.text(`You are accessing ${c.req.path}`))
+      const res = await app.request(location.href)
+      document.getElementById('result').innerText = await res.text()
     </script>
   </head>
   <body>
