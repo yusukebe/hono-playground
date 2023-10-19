@@ -38,3 +38,13 @@ Yusuke Wada <https://github.com/yusukebe>
 ## License
 
 MIT
+
+---
+
+```txt
+Monaco Editor
+
+The MIT License (MIT)
+
+Copyright (c) 2016 - present Microsoft Corporation
+```

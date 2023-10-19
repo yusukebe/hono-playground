@@ -7,27 +7,52 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
     />
+    <link rel="stylesheet" data-name="vs/editor/editor.main" href="/vs/editor/editor.main.css" />
     <link rel="stylesheet" href="/style.css" />
+    <script>
+      var require = { paths: { vs: '/vs' } }
+    </script>
+    <script src="/vs/loader.js"></script>
+    <script src="/vs/editor/editor.main.nls.js"></script>
+    <script src="/vs/editor/editor.main.js"></script>
     <script type="module">
       import Alpine from 'https://esm.sh/alpinejs'
+
       Alpine.store('app', {
         init() {
           this.dispatch()
+          this.createMonaco()
+        },
+        createMonaco() {
+          const editor = monaco.editor.create(document.getElementById('editor'), {
+            value: [this.code].join('\n'),
+            language: 'javascript',
+            minimap: { enabled: false },
+          })
+          editor.getModel().onDidChangeContent((event) => {
+            this.code = editor.getValue()
+            this.dispatch()
+          })
         },
         async dispatch() {
           const code = this.code
-          const blobURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }))
-          const { default: app } = await import(/*@vite-ignore */ blobURL)
-          const res = await app.request(this.path, {
-            method: this.method,
-          })
-          this.info.status = res.status
-          this.info.headers = [...res.headers.entries()]
-            .reduce((acc, [key, value]) => {
-              return acc + `${key}: ${value}, `
-            }, '')
-            .slice(0, -2)
-          this.result = await res.text()
+          try {
+            const blobURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }))
+            const { default: app } = await import(/*@vite-ignore */ blobURL)
+
+            const res = await app.request(this.path, {
+              method: this.method,
+            })
+            this.info.status = res.status
+            this.info.headers = [...res.headers.entries()]
+              .reduce((acc, [key, value]) => {
+                return acc + `${key}: ${value}, `
+              }, '')
+              .slice(0, -2)
+            this.result = await res.text()
+          } catch (e) {
+            console.log(`${e}`)
+          }
         },
         code: `import { Hono } from 'https://esm.sh/hono'
 
@@ -55,13 +80,7 @@ export default app`,
   <body>
     <header>Hono on your browser.</header>
     <main x-data>
-      <div id="editor">
-        <textarea
-          class="language-javascript"
-          @keydown.enter="$store.app.dispatch()"
-          x-model="$store.app.code"
-        ></textarea>
-      </div>
+      <div id="editor"></div>
       <div id="browser">
         <form @submit.prevent="$store.app.dispatch()">
           <select x-model="$store.app.method">
