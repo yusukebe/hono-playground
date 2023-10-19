@@ -1,0 +1,12 @@
+{
+  "name": "hono-playground",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "^4.5.0"
+  }
+}

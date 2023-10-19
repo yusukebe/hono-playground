@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module">
+      import { Hono } from 'https://esm.sh/hono@3.8.1'
+      import Alpine from 'https://esm.sh/alpinejs'
+      Alpine.store('app', {
+        init() {
+          this.dispatch()
+        },
+        async dispatch() {
+          const f = new Function('Hono', this.code.replace(/export\s+default/, 'return '))
+          const app = f(Hono)
+          const res = await app.request(this.path, {
+            method: this.method
+          })
+          this.info.status = res.status
+          this.info.headers = [...res.headers.entries()]
+            .reduce((acc, [key, value]) => {
+              return acc + `${key}: ${value}, `
+            }, '')
+            .slice(0, -2)
+          this.result = await res.text()
+        },
+        code: `const app = new Hono()
+
+app.get('/hello', (c) => {
+  const name = c.req.query('name')
+  return c.text(\`Hello \${name}\!\`)
+})
+
+export default app`,
+        method: 'get',
+        path: '/hello?name=Hono',
+        result: 'loading...',
+        info: {
+          status: undefined,
+          headers: ''
+        }
+      })
+      window.Alpine = Alpine
+      window.Alpine.start()
+    </script>
+    <title>Hono Playground</title>
+  </head>
+  <body>
+    <header>Hono on your browser.</header>
+    <main x-data>
+      <div id="editor">
+        <textarea
+          class="language-javascript"
+          @keydown.enter="$store.app.dispatch()"
+          x-model="$store.app.code"
+        ></textarea>
+      </div>
+      <div id="browser">
+        <form @submit.prevent="$store.app.dispatch()">
+          <select x-model="$store.app.method">
+            <option value="get">GET</option>
+            <option value="post">POST</option>
+            <option value="put">PUT</option>
+            <option value="delete">DELETE</option>
+          </select>
+          <input type="text" x-model="$store.app.path" autocomplete="off" />
+          <button>Send</button>
+        </form>
+        <div id="result">
+          <div>
+            <small x-text="$store.app.info.status"></small><br />
+            <small x-text="$store.app.info.headers"></small>
+          </div>
+          <hr />
+          <div x-text="$store.app.result"></div>
+        </div>
+      </div>
+    </main>
+    <footer>Powered by <a href="https://hono.dev">hono</a></footer>
+  </body>
+</html>
