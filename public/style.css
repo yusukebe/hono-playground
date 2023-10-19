@@ -1,3 +1,7 @@
+body {
+  max-width: 900px;
+}
+
 main {
   display: flex;
   flex-direction: row;
