@@ -13,8 +13,9 @@
           this.dispatch()
         },
         async dispatch() {
-          const f = new Function('Hono', this.code.replace(/export\s+default/, 'return '))
-          const app = f(Hono)
+          const code = this.code;
+          const blobURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }))
+          const { default: app } = await import(blobURL)
           const res = await app.request(this.path, {
             method: this.method
           })
@@ -26,7 +27,9 @@
             .slice(0, -2)
           this.result = await res.text()
         },
-        code: `const app = new Hono()
+        code: `import { Hono } from 'https://esm.sh/hono@3.8.1'
+
+const app = new Hono()
 
 app.get('/hello', (c) => {
   const name = c.req.query('name')
