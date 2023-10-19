@@ -1,5 +1,5 @@
 body {
-  max-width: 900px;
+  max-width: 940px;
 }
 
 main {
@@ -9,7 +9,7 @@ main {
 }
 
 #editor {
-  flex: 1;
+  flex: 4;
   padding: 10px;
   overflow: auto;
 }
@@ -21,7 +21,7 @@ main {
 }
 
 #browser {
-  flex: 1;
+  flex: 3;
   padding: 10px;
   overflow: auto;
 }
