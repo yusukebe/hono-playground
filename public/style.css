@@ -2,20 +2,28 @@ body {
   max-width: 940px;
 }
 
+
 main {
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
-  height: 500px;
+  min-height: 500px;
+  height: auto;
+  width: 100vw;
 }
 
 #editor {
   flex: 4;
+  min-width: 550px;
+  max-width: 50vw;
 }
 
 #browser {
   flex: 3;
   padding: 10px;
   overflow: auto;
+  min-width: 350px;
+  max-width: 50vw;
 }
 
 #browser #result {
@@ -35,6 +43,7 @@ main {
 }
 
 footer {
+  margin-top: 1rem;
   font-size: small;
   font-style: italic;
 }
