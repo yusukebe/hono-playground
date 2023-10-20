@@ -1,7 +1,7 @@
 body {
-  max-width: 940px;
+  padding: 1.5rem;
+  box-sizing: border-box;
 }
-
 
 main {
   display: flex;
@@ -9,27 +9,34 @@ main {
   flex-direction: row;
   min-height: 500px;
   height: auto;
-  width: 100vw;
+  width: calc(100vw - 1.5rem);
 }
 
 #editor {
   flex: 4;
+  height: 80vh;
   min-width: 550px;
-  max-width: 50vw;
+  max-width: 40vw;
 }
 
 #browser {
   flex: 3;
   padding: 10px;
-  overflow: auto;
   min-width: 350px;
   max-width: 50vw;
+}
+
+@media (max-width: 1000px) {
+  #browser {
+    max-width: 100vw;
+  }
 }
 
 #browser #result {
   padding: 1rem;
   border: 1px solid #eee;
   border-radius: 5px;
+  height: 50%;
 }
 
 #browser input {
@@ -46,4 +53,8 @@ footer {
   margin-top: 1rem;
   font-size: small;
   font-style: italic;
+}
+
+*::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: hidden;
 }
