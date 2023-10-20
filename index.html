@@ -68,7 +68,7 @@
           try {
             const browserURL = URL.createObjectURL(new Blob([blob], { type: blob.type }))
             document.querySelector(".browser").src = browserURL;
-          }catch(_e) {} 
+          } catch (_e) { }
 
           this.info.status = res.status
           this.info.headers = [...res.headers.entries()]
@@ -137,8 +137,8 @@ export default app`,
             <small x-text="$store.app.info.headers"></small>
           </div>
           <hr />
-          <div x-text="$store.app.result"></div>
-  
+          <div x-text="$store.app.result" class="res"></div>
+
         </div>
       </div>
       <div id="view">
@@ -150,11 +150,11 @@ export default app`,
 
           <div class="tab-panel" :class="{ 'active': activeTab === 0 }"
             x-show.transition.in.opacity.duration.600="activeTab === 0">
-            <p>Console here</p>
+
           </div>
           <div class="tab-panel" :class="{ 'active': activeTab === 1 }"
             x-show.transition.in.opacity.duration.600="activeTab === 1">
-           <iframe src="//none" frameborder="0" class="browser"></iframe>
+            <iframe src="//none" frameborder="0" class="browser"></iframe>
           </div>
         </div>
       </div>
