@@ -141,23 +141,6 @@ export default app`,
 
         </div>
       </div>
-      <div id="view">
-        <div class="tab-wrapper" x-data="{ activeTab:  0 }">
-          <div class="flex">
-            <label @click="activeTab = 0" class="tab-control" :class="{ 'active': activeTab === 0 }"><span>Console</span></label>
-            <label @click="activeTab = 1" class="tab-control" :class="{ 'active': activeTab === 1 }"><span>Browser</span></label>
-          </div>
-
-          <div class="tab-panel" :class="{ 'active': activeTab === 0 }"
-            x-show.transition.in.opacity.duration.600="activeTab === 0">
-
-          </div>
-          <div class="tab-panel" :class="{ 'active': activeTab === 1 }"
-            x-show.transition.in.opacity.duration.600="activeTab === 1">
-            <iframe src="//none" frameborder="0" class="browser"></iframe>
-          </div>
-        </div>
-      </div>
     </div>
   </main>
   <footer>
