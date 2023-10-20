@@ -8,7 +8,5 @@ export function importParser(code) {
         return match;
     })
 
-    console.log(code)
-
     return code;
 }
