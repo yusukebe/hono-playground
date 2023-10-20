@@ -19,6 +19,7 @@
 
       Alpine.store('app', {
         init() {
+          this.setFromQuery()
           this.dispatch()
           this.createMonaco()
         },
@@ -31,6 +32,7 @@
           editor.getModel().onDidChangeContent((event) => {
             this.code = editor.getValue()
             this.dispatch()
+            this.updateQuery()
           })
         },
         async dispatch() {
@@ -97,6 +99,23 @@ export default app`,
           status: undefined,
           headers: '',
         },
+        setFromQuery() {
+          const url = new URL(window.location.href)
+          this.code = url.searchParams.get('code') || this.code
+          this.method = url.searchParams.get('method') || this.method
+          this.path = url.searchParams.get('path') || this.path
+        },
+        updateQuery() {
+          const url = new URL(window.location.href)
+          url.searchParams.set('code', this.code)
+          url.searchParams.set('method', this.method)
+          url.searchParams.set('path', this.path)
+          window.history.replaceState({}, '', url)
+        },
+        copyUrl() {
+          this.updateQuery()
+          navigator.clipboard.writeText(window.location.href)
+        },
       })
       window.Alpine = Alpine
       window.Alpine.start()
@@ -128,6 +147,7 @@ export default app`,
           <hr />
           <div x-text="$store.app.result"></div>
         </div>
+        <button @click="$store.app.copyUrl()">Copy Share URL</button>
       </div>
     </main>
     <footer>
