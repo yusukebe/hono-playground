@@ -144,8 +144,8 @@ export default app`,
       <div id="view">
         <div class="tab-wrapper" x-data="{ activeTab:  0 }">
           <div class="flex">
-            <label @click="activeTab = 0" class="tab-control" :class="{ 'active': activeTab === 0 }">Console</label>
-            <label @click="activeTab = 1" class="tab-control" :class="{ 'active': activeTab === 1 }">Browser</label>
+            <label @click="activeTab = 0" class="tab-control" :class="{ 'active': activeTab === 0 }"><span>Console</span></label>
+            <label @click="activeTab = 1" class="tab-control" :class="{ 'active': activeTab === 1 }"><span>Browser</span></label>
           </div>
 
           <div class="tab-panel" :class="{ 'active': activeTab === 0 }"
