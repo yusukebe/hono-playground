@@ -1,6 +1,6 @@
 export function importParser(code) {
 
-    code = code.replace(/from\s+[\'\"\`](.+)[^\'\"\`][\'\"\`]/, (match, k) => {
+    code = code.replace(/from\s+[\'\"\`](.+)[^\'\"\`][\'\"\`]/gmi, (match, k) => {
         if (!match.includes("\/\/")) {
             match = match.replace(k, "https://esm.sh/" + k)
         }
@@ -8,5 +8,6 @@ export function importParser(code) {
         return match;
     })
 
+    console.log(code)
     return code;
 }
