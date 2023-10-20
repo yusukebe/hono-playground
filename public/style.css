@@ -9,7 +9,7 @@ main {
   flex-direction: row;
   min-height: 500px;
   height: auto;
-  width: 100vw;
+  width: 100%;
 }
 
 #editor {
