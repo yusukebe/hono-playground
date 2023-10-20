@@ -16,6 +16,7 @@
     <script type="module">
       import Alpine from 'https://esm.sh/alpinejs'
       import initSwc, { transformSync } from 'https://esm.sh/@swc/wasm-web'
+      import { importParser } from './scripts/importParser.js'
 
       Alpine.store('app', {
         init() {
@@ -38,7 +39,7 @@
           try {
             await initSwc()
             const importSource = `import { jsx, Fragment } from 'https://esm.sh/hono/jsx'\n`
-            const { code } = transformSync(importSource + this.code, {
+            const { code } = transformSync(importParser(this.code), {
               jsc: {
                 parser: {
                   syntax: 'typescript',
@@ -72,7 +73,7 @@
             console.log(`${e}`)
           }
         },
-        code: `import { Hono } from 'https://esm.sh/hono'
+        code: `import { Hono } from 'hono'
 
 const app = new Hono()
 
