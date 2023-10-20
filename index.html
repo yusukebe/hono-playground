@@ -1,79 +1,80 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/new.min.css" />
-    <link rel="stylesheet" data-name="vs/editor/editor.main" href="/vs/editor/editor.main.css" />
-    <link rel="stylesheet" href="/style.css" />
-    <link rel="icon shortcut" href="/favicon.png" />
-    <script>
-      var require = { paths: { vs: '/vs' } }
-    </script>
-    <script src="/vs/loader.js"></script>
-    <script src="/vs/editor/editor.main.nls.js"></script>
-    <script src="/vs/editor/editor.main.js"></script>
-    <script type="module">
-      import Alpine from 'https://esm.sh/alpinejs'
-      import initSwc, { transformSync } from 'https://esm.sh/@swc/wasm-web'
-      import { importParser } from './src/importParser.js'
 
-      Alpine.store('app', {
-        init() {
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/new.min.css" />
+  <link rel="stylesheet" data-name="vs/editor/editor.main" href="/vs/editor/editor.main.css" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="icon shortcut" href="/favicon.png" />
+  <script>
+    var require = { paths: { vs: '/vs' } }
+  </script>
+  <script src="/vs/loader.js"></script>
+  <script src="/vs/editor/editor.main.nls.js"></script>
+  <script src="/vs/editor/editor.main.js"></script>
+  <script type="module">
+    import Alpine from 'https://esm.sh/alpinejs'
+    import initSwc, { transformSync } from 'https://esm.sh/@swc/wasm-web'
+    import { importParser } from './src/utils/import-parser.ts'
+
+    Alpine.store('app', {
+      init() {
+        this.dispatch()
+        this.createMonaco()
+      },
+      createMonaco() {
+        const editor = monaco.editor.create(document.getElementById('editor'), {
+          value: [this.code].join('\n'),
+          language: 'javascript',
+          minimap: { enabled: false },
+        })
+        editor.getModel().onDidChangeContent((event) => {
+          this.code = editor.getValue()
           this.dispatch()
-          this.createMonaco()
-        },
-        createMonaco() {
-          const editor = monaco.editor.create(document.getElementById('editor'), {
-            value: [this.code].join('\n'),
-            language: 'javascript',
-            minimap: { enabled: false },
-          })
-          editor.getModel().onDidChangeContent((event) => {
-            this.code = editor.getValue()
-            this.dispatch()
-          })
-        },
-        async dispatch() {
-          const code = this.code
-          try {
-            await initSwc()
-            const importSource = `import { jsx, Fragment } from 'https://esm.sh/hono/jsx'\n`
-            const { code } = transformSync(importSource + importParser(this.code), {
-              jsc: {
-                parser: {
-                  syntax: 'typescript',
-                  tsx: true,
-                },
-                transform: {
-                  react: {
-                    pragma: 'jsx',
-                    pragmaFrag: 'Fragment',
-                    throwIfNamespace: true,
-                    development: false,
-                    useBuiltins: false,
-                  },
+        })
+      },
+      async dispatch() {
+        const code = this.code
+        try {
+          await initSwc()
+          const importSource = `import { jsx, Fragment } from 'https://esm.sh/hono/jsx'\n`
+          const { code } = transformSync(importSource + importParser(this.code), {
+            jsc: {
+              parser: {
+                syntax: 'typescript',
+                tsx: true,
+              },
+              transform: {
+                react: {
+                  pragma: 'jsx',
+                  pragmaFrag: 'Fragment',
+                  throwIfNamespace: true,
+                  development: false,
+                  useBuiltins: false,
                 },
               },
-            })
-            const blobURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }))
-            const { default: app } = await import(/*@vite-ignore */ blobURL)
+            },
+          })
+          const blobURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }))
+          const { default: app } = await import(/*@vite-ignore */ blobURL)
 
-            const res = await app.request(this.path, {
-              method: this.method,
-            })
-            this.info.status = res.status
-            this.info.headers = [...res.headers.entries()]
-              .reduce((acc, [key, value]) => {
-                return acc + `${key}: ${value}, `
-              }, '')
-              .slice(0, -2)
-            this.result = await res.text()
-          } catch (e) {
-            console.log(`${e}`)
-          }
-        },
-        code: `import { Hono } from 'hono'
+          const res = await app.request(this.path, {
+            method: this.method,
+          })
+          this.info.status = res.status
+          this.info.headers = [...res.headers.entries()]
+            .reduce((acc, [key, value]) => {
+              return acc + `${key}: ${value}, `
+            }, '')
+            .slice(0, -2)
+          this.result = await res.text()
+        } catch (e) {
+          console.log(`${e}`)
+        }
+      },
+      code: `import { Hono } from 'hono'
 
 const app = new Hono()
 
@@ -91,26 +92,28 @@ app.get('/jsx', (c) => {
 })
 
 export default app`,
-        method: 'get',
-        path: '/hello?name=Hono',
-        result: 'loading...',
-        info: {
-          status: undefined,
-          headers: '',
-        },
-      })
-      window.Alpine = Alpine
-      window.Alpine.start()
-    </script>
-    <title>Hono Playground</title>
-  </head>
-  <body>
-    <header>
-      <h1>Hono Playground</h1>
-    </header>
-    <main x-data>
-      <div id="editor"></div>
-      <div id="browser">
+      method: 'get',
+      path: '/hello?name=Hono',
+      result: 'loading...',
+      info: {
+        status: undefined,
+        headers: '',
+      },
+    })
+    window.Alpine = Alpine
+    window.Alpine.start()
+  </script>
+  <title>Hono Playground</title>
+</head>
+
+<body>
+  <header>
+    <h1>Hono Playground</h1>
+  </header>
+  <main x-data>
+    <div id="editor"></div>
+    <div id="browser">
+      <div id="client">
         <form @submit.prevent="$store.app.dispatch()">
           <select x-model="$store.app.method">
             <option value="get">GET</option>
@@ -128,12 +131,32 @@ export default app`,
           </div>
           <hr />
           <div x-text="$store.app.result"></div>
+  
         </div>
       </div>
-    </main>
-    <footer>
-      Powered by <a href="https://hono.dev">Hono</a>,
-      <a href="https://github.com/yusukebe/hono-playground/blob/main/index.html">the code</a>.
-    </footer>
-  </body>
+      <div id="view">
+        <div class="tab-wrapper" x-data="{ activeTab:  0 }">
+          <div class="flex">
+            <label @click="activeTab = 0" class="tab-control" :class="{ 'active': activeTab === 0 }">Console</label>
+            <label @click="activeTab = 1" class="tab-control" :class="{ 'active': activeTab === 1 }">Browser</label>
+          </div>
+
+          <div class="tab-panel" :class="{ 'active': activeTab === 0 }"
+            x-show.transition.in.opacity.duration.600="activeTab === 0">
+            <p>Console here</p>
+          </div>
+          <div class="tab-panel" :class="{ 'active': activeTab === 1 }"
+            x-show.transition.in.opacity.duration.600="activeTab === 1">
+            <p>Browser here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer>
+    Powered by <a href="https://hono.dev">Hono</a>,
+    <a href="https://github.com/yusukebe/hono-playground/blob/main/index.html">the code</a>.
+  </footer>
+</body>
+
 </html>
