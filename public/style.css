@@ -2,7 +2,6 @@ body {
   padding: 1.5rem;
 }
 
-
 main {
   display: flex;
   flex-wrap: wrap;
@@ -15,7 +14,7 @@ main {
 #editor {
   flex: 4;
   min-width: 550px;
-  max-width: 50vw;
+  max-width: 40vw;
 }
 
 #browser {
@@ -26,10 +25,17 @@ main {
   max-width: 50vw;
 }
 
+@media (max-width: 1000px) {
+  #browser {
+    max-width: 100vw;
+  }
+}
+
 #browser #result {
   padding: 1rem;
   border: 1px solid #eee;
   border-radius: 5px;
+  height: 50%;
 }
 
 #browser input {
@@ -42,8 +48,42 @@ main {
   margin: 0;
 }
 
+#view { 
+  height: 50%;
+  overflow-y: none;
+}
+
+.tab-wrapper {
+  width: 100%;
+  height: 100%;
+  padding-top: 25px;
+}
+
+.tab-wrapper > .flex > label {
+  background-color: #eee;
+  color: #010101;
+  padding: 5px 7.5px;
+  border-radius: 10px 10px 0 0;
+  font-weight: bold;
+  font-family: monospace;
+}
+
+.tab-panel { 
+  width: 100%;
+  height: 100%;
+  background-color: #eee;
+}
+
 footer {
   margin-top: 1rem;
   font-size: small;
   font-style: italic;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-button {
+  background-color: #eee;
 }
