@@ -1,5 +1,6 @@
 body {
   padding: 1.5rem;
+  box-sizing: border-box;
 }
 
 main {
@@ -20,7 +21,6 @@ main {
 #browser {
   flex: 3;
   padding: 10px;
-  overflow: auto;
   min-width: 350px;
   max-width: 50vw;
 }
@@ -50,7 +50,6 @@ main {
 
 #view { 
   height: 50%;
-  overflow-y: none;
 }
 
 .tab-wrapper {
@@ -60,18 +59,30 @@ main {
 }
 
 .tab-wrapper > .flex > label {
-  background-color: #eee;
   color: #010101;
-  padding: 5px 7.5px;
-  border-radius: 10px 10px 0 0;
-  font-weight: bold;
-  font-family: monospace;
+  padding: 5px 7.5px 2px 7.5px;
+  border-radius: 5px 5px 0 0;
+  font-weight: 500;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+}
+
+.tab-control.active {
+  background-color: #4ade80;
+  color: #FFFFFF !important;
+}
+
+.tab-control {
+  background-color: #FFFFFF;
+  transition: all 0.25s;
 }
 
 .tab-panel { 
   width: 100%;
   height: 100%;
-  background-color: #eee;
+  box-shadow: 0px 5px 5px -5px #777777;
+  border-radius: 2px 5px 5px 5px;
+  position: relative;
+  z-index: 3;
 }
 
 .tab-panel > .browser {
@@ -86,9 +97,5 @@ footer {
 }
 
 *::-webkit-scrollbar {
-  width: 10px;
-}
-
-*::-webkit-scrollbar-button {
-  background-color: #eee;
+  display: hidden;
 }
