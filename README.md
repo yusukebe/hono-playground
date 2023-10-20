@@ -8,7 +8,8 @@ This may seem obvious, but it's exciting to see it actually work in this manner.
 
 ## Screenshots
 
-![SS](https://github.com/yusukebe/hono-playground/assets/10682/3e234a53-bed8-4b2a-86b0-8ec8d5448b8b)
+![SS](https://github.com/yusukebe/hono-playground/assets/121654029/8432b75b-c482-4ba4-ba60-a156391f2fb5)
+
 
 ## The minimal code
 
