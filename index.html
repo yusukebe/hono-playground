@@ -39,7 +39,7 @@
           try {
             await initSwc()
             const importSource = `import { jsx, Fragment } from 'https://esm.sh/hono/jsx'\n`
-            const { code } = transformSync(importParser(this.code), {
+            const { code } = transformSync(importSource + importParser(this.code), {
               jsc: {
                 parser: {
                   syntax: 'typescript',
