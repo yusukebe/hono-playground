@@ -1,5 +1,5 @@
 body {
-  max-width: 940px;
+  padding: 1.5rem;
 }
 
 
@@ -9,7 +9,7 @@ main {
   flex-direction: row;
   min-height: 500px;
   height: auto;
-  width: 100vw;
+  width: calc(100vw - 1.5rem);
 }
 
 #editor {

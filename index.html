@@ -3,10 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
-    />
+    <link rel="stylesheet" href="/new.min.css" />
     <link rel="stylesheet" data-name="vs/editor/editor.main" href="/vs/editor/editor.main.css" />
     <link rel="stylesheet" href="/style.css" />
     <link rel="icon shortcut" href="/favicon.png" />
@@ -18,6 +15,8 @@
     <script src="/vs/editor/editor.main.js"></script>
     <script type="module">
       import Alpine from 'https://esm.sh/alpinejs'
+      import initSwc, { transformSync } from 'https://esm.sh/@swc/wasm-web'
+      import { importParser } from './src/importParser.js'
 
       Alpine.store('app', {
         init() {
@@ -38,6 +37,25 @@
         async dispatch() {
           const code = this.code
           try {
+            await initSwc()
+            const importSource = `import { jsx, Fragment } from 'https://esm.sh/hono/jsx'\n`
+            const { code } = transformSync(importParser(this.code), {
+              jsc: {
+                parser: {
+                  syntax: 'typescript',
+                  tsx: true,
+                },
+                transform: {
+                  react: {
+                    pragma: 'jsx',
+                    pragmaFrag: 'Fragment',
+                    throwIfNamespace: true,
+                    development: false,
+                    useBuiltins: false,
+                  },
+                },
+              },
+            })
             const blobURL = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }))
             const { default: app } = await import(/*@vite-ignore */ blobURL)
 
@@ -55,13 +73,21 @@
             console.log(`${e}`)
           }
         },
-        code: `import { Hono } from 'https://esm.sh/hono'
+        code: `import { Hono } from 'hono'
 
 const app = new Hono()
 
 app.get('/hello', (c) => {
   const name = c.req.query('name')
   return c.text(\`Hello \${name}\!\`)
+})
+
+app.get('/jsx', (c) => {
+  return c.html(
+    <div>
+      <h1>Hello JSX!</h1>
+    </div>
+  )
 })
 
 export default app`,
