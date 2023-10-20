@@ -2,6 +2,7 @@ body {
   max-width: 940px;
 }
 
+
 main {
   display: flex;
   flex-direction: row;
@@ -35,6 +36,7 @@ main {
 }
 
 footer {
+  margin-top: 1rem;
   font-size: small;
   font-style: italic;
 }
