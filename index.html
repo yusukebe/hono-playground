@@ -63,13 +63,20 @@
           const res = await app.request(this.path, {
             method: this.method,
           })
+
+          const blob = await res.blob();
+          try {
+            const browserURL = URL.createObjectURL(new Blob([blob], { type: res.headers["Content-Type"] }))
+            document.querySelector(".browser").src = browserURL;
+          }catch(_e) {} 
+
           this.info.status = res.status
           this.info.headers = [...res.headers.entries()]
             .reduce((acc, [key, value]) => {
               return acc + `${key}: ${value}, `
             }, '')
             .slice(0, -2)
-          this.result = await res.text()
+          this.result = await blob.text();
         } catch (e) {
           console.log(`${e}`)
         }
@@ -147,7 +154,7 @@ export default app`,
           </div>
           <div class="tab-panel" :class="{ 'active': activeTab === 1 }"
             x-show.transition.in.opacity.duration.600="activeTab === 1">
-            <p>Browser here</p>
+           <iframe src="//none" frameborder="0" class="browser"></iframe>
           </div>
         </div>
       </div>
