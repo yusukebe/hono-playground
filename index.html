@@ -21,6 +21,7 @@
         init() {
           this.dispatch()
           this.createMonaco()
+          this.formatJson()
         },
         createMonaco() {
           const editor = monaco.editor.create(document.getElementById('editor'), {
@@ -32,6 +33,17 @@
             this.code = editor.getValue()
             this.dispatch()
           })
+        },
+        formatJson() {
+          if (this.body == null || this.body.trim() === '') {
+            return
+          }
+          try {
+            let formattedBody = this.body.replace(/(\w+)\s*:/g, '"$1":')
+            this.body = JSON.stringify(JSON.parse(formattedBody), null, 2)
+          } catch (e) {
+            console.error('Invalid JSON:', e)
+          }
         },
         async dispatch() {
           const code = this.code
@@ -60,6 +72,8 @@
 
             const res = await app.request(this.path, {
               method: this.method,
+              headers: this.method !== 'get' ? { 'Content-Type': 'application/json' } : undefined,
+              body: this.method !== 'get' ? this.body : undefined,
             })
             this.info.status = res.status
             this.info.headers = [...res.headers.entries()]
@@ -88,6 +102,16 @@ app.get('/jsx', (c) => {
     </div>
   )
 })
+
+app.post('/json', async (c) => {
+  try {
+    const body = await c.req.json();
+
+    return c.json(body);
+  } catch (error) {
+    return c.text('Bad Request: Invalid JSON',{ status: 400 });
+  }
+});
 
 export default app`,
         method: 'get',
@@ -120,6 +144,19 @@ export default app`,
           <input type="text" x-model="$store.app.path" autocomplete="off" />
           <button>Send</button>
         </form>
+        <div id="body" x-show="$store.app.method !== 'get'">
+          <div>
+            Body JSON Content
+            <button @click="$store.app.formatJson()">Format</button>
+          </div>
+          <br />
+          <textarea
+            placeholder="Enter body JSON..."
+            x-model="$store.app.body"
+            autocomplete="off"
+            rows="4"
+          ></textarea>
+        </div>
         <div id="result">
           <div>
             <small x-text="$store.app.info.status"></small><br />

@@ -39,6 +39,10 @@ main {
   height: 50%;
 }
 
+#browser textarea {
+  width: 50%;
+}
+
 #browser input {
   width: 50%;
 }
@@ -55,6 +59,7 @@ footer {
   font-style: italic;
 }
 
-*::-webkit-scrollbar, body::-webkit-scrollbar {
+*::-webkit-scrollbar,
+body::-webkit-scrollbar {
   display: hidden;
 }
